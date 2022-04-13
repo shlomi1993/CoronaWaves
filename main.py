@@ -61,7 +61,7 @@ class Automata:
                         p = self.high_prob
                     else:
                         p = self.low_prob
-                    c.update(self.grid, i, j, p, self.infectionTime)
+                    self.sick += c.update(self.grid, i, j, p, self.infectionTime)
                     dj, di = actions[random.randint(1, 9)]
                     new_i = (i + di * c.steps) % self.height
                     new_j = (j + dj * c.steps) % self.width
@@ -94,7 +94,10 @@ class Creature:
         self.steps = 1
 
     def update(self, grid, i, j, probability, infectionTime):
-        if self.infection > 0:
+        if self.infection == 1:
+            self.infection -= 1
+            return -1
+        if self.infection > 1:
             self.infection -= 1
         else:
             for x in range(-1, 2):
@@ -105,6 +108,8 @@ class Creature:
                     if neighbor is not None and neighbor.infection > 0:
                         if random.random() < probability:
                             self.infection = infectionTime
+                            return 1
+        return 0
 
 
 if __name__ == '__main__':
