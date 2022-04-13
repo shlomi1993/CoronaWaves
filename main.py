@@ -108,4 +108,5 @@ class Creature:
 
 
 if __name__ == '__main__':
-    automata = Automata(width=200, height=200, N=5000, P_high=0.3, P_low=0.1, D=0.1, T=10)
+    automata = Automata(width=200, height=200, N=5000, D=0.2, R=0.05, X=10,
+                        P_high=0.3, P_low=0.1, T=0.2)
