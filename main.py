@@ -151,4 +151,5 @@ class Creature:
 #             raise 'implement what to do when destination cell is not empty.'
 
 if __name__ == '__main__':
+    c = Creature()
     automata = Automata(width=200, height=200, N=5000, P_high=0.3, P_low=0.1, D=0.1, T=10)
