@@ -1,4 +1,12 @@
+# Shlomi Ben-Shushan 311408264
+# Itamar Laredo _________
+
+
 class State:
+    """
+    This class represents automata's states, implementing State Design Pattern.
+    Each method of it set True to one attribute, and False to all the others.
+    """
 
     def __init__(self):
         self.is_stopped = True
