@@ -1,5 +1,5 @@
 # Shlomi Ben-Shushan 311408264
-# Itamar Laredo _________
+# Itamar Laredo 311547087
 
 import tkinter as tk
 from tkinter import messagebox
@@ -219,7 +219,7 @@ class App:
             bg=palette.bg,
             fg=palette.fg,
             text='\u00A9 Created by Shlomi Ben-Shushan and Itamar Laredo'
-        ).place(relx=0.007, rely=0.97)
+        ).place(relx=0.006, rely=0.97)
 
         self.window.mainloop()
 
@@ -234,7 +234,6 @@ class App:
         error_messages = []
         N, D, X, R, PH, PL, T = 0, 0, 0, 0, 0, 0, 0
 
-        D = float(self.p_infected.get().strip())
         try:
             N = int(self.n_creature.get().strip())
             if N <= 0 or N > 40000:

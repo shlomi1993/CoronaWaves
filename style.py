@@ -1,5 +1,5 @@
 # Shlomi Ben-Shushan 311408264
-# Itamar Laredo _________
+# Itamar Laredo 311547087
 
 
 class Palette:

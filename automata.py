@@ -1,5 +1,5 @@
 # Shlomi Ben-Shushan 311408264
-# Itamar Laredo _________
+# Itamar Laredo 311547087
 
 
 import random
@@ -67,7 +67,7 @@ class Creature:
         """
         i, j = self.pos
         for _ in range(5):
-            dj, di = random.randint(-1, 1), random.randint(-1, 1)
+            di, dj = random.randint(-1, 1), random.randint(-1, 1)
             new_i = (i + di * self.steps) % DIM
             new_j = (j + dj * self.steps) % DIM
             if new_i == i and new_j == j:
@@ -286,7 +286,7 @@ class Automata:
         :return: None.
         """
         self.state.setRunning()
-        self.app.window.after(100, self.__loop)
+        self.app.window.after(0, self.__loop)
 
     def pause(self):
         """
