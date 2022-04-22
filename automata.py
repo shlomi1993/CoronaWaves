@@ -234,7 +234,7 @@ class Automata:
 
     def plot(self):
         """
-        This private method creates a plot, show it, and save it to a PNG file.
+        This private method creates a plot and show it.
         :return: None, but it outputs a plot.
         """
         plt.figure()
@@ -243,7 +243,6 @@ class Automata:
         plt.ylabel('Infected')
         plt.plot(list(range(len(self.trand))), self.trand)
         plt.show()
-        plt.savefig("infection.png")
 
     def set(self, N, D, X, R, P_high, P_low, T, L):
         """

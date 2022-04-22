@@ -159,7 +159,7 @@ class App(tk.Tk):
             text='\u23F8 Pause',
             command=self.pause_btn_action
         )
-        self.pause_btn.place(relx=0.01, rely=0.59, width=125, height=40)
+        self.pause_btn.place(relx=0.01, rely=0.745, width=125, height=40)
 
         self.stop_btn = tk.Button(
             master=self,
@@ -171,7 +171,7 @@ class App(tk.Tk):
             text='\u23F9 Stop',
             command=self.stop_btn_action
         )
-        self.stop_btn.place(relx=0.137, rely=0.59, width=125, height=40)
+        self.stop_btn.place(relx=0.137, rely=0.745, width=125, height=40)
 
         self.run_btn = tk.Button(
             master=self,
@@ -183,7 +183,7 @@ class App(tk.Tk):
             text='\u23F5 Start   ',
             command=self.run_btn_action
         )
-        self.run_btn.place(relx=0.01, rely=0.59, width=265, height=40)
+        self.run_btn.place(relx=0.01, rely=0.745, width=265, height=40)
 
         # Create information section with labels and entries.
         self.information = tk.LabelFrame(
@@ -234,6 +234,48 @@ class App(tk.Tk):
         ).grid(row=3, column=0, padx=5, pady=5, sticky='w')
         self.capacity = createEntry(self.information, 'n/a')
         self.capacity.grid(row=3, column=1, padx=5, pady=5, sticky='w')
+
+        # Create Legend section.
+        self.legend = tk.LabelFrame(
+            master=self,
+            bg=palette.bg,
+            fg=palette.fg,
+            text='Legend',
+            font=fonts.regular
+        )
+        self.legend.place(relx=0.01, rely=0.585, width=265)
+
+        tk.Label(
+            master=self.legend,
+            font=fonts.regular,
+            bg=palette.bg,
+            fg=palette.fg,
+            text=' \u2022  White - healthy.'
+        ).grid(row=0, column=0, padx=5, pady=0, sticky='w')
+
+        tk.Label(
+            master=self.legend,
+            font=fonts.regular,
+            bg=palette.bg,
+            fg=palette.fg,
+            text=' \u2022  Cyan - healthy and quick.'
+        ).grid(row=1, column=0, padx=5, pady=0, sticky='w')
+
+        tk.Label(
+            master=self.legend,
+            font=fonts.regular,
+            bg=palette.bg,
+            fg=palette.fg,
+            text=' \u2022  Orange - infected.'
+        ).grid(row=2, column=0, padx=5, pady=0, sticky='w')
+
+        tk.Label(
+            master=self.legend,
+            font=fonts.regular,
+            bg=palette.bg,
+            fg=palette.fg,
+            text=' \u2022  Red - infected and quick.'
+        ).grid(row=3, column=0, padx=5, pady=0, sticky='w')
 
         # Credit.
         tk.Label(
@@ -350,7 +392,7 @@ class App(tk.Tk):
         Defines the action to be taken when user clicks the "Pause" button.
         :return: None.
         """
-        self.run_btn.place(relx=0.01, rely=0.59, width=265, height=40)
+        self.run_btn.place(relx=0.01, rely=0.745, width=265, height=40)
         self.run_btn.configure(text='\u23F5 Resume  ', font=fonts.bold)
         self.automata.pause()
 
@@ -359,6 +401,6 @@ class App(tk.Tk):
         Defines the action to be taken when user click the "Stop" button.
         :return: None.
         """
-        self.run_btn.place(relx=0.01, rely=0.59, width=265, height=40)
+        self.run_btn.place(relx=0.01, rely=0.745, width=265, height=40)
         self.run_btn.configure(text='\u23F5 Start   ', font=fonts.bold)
         self.automata.stop()
