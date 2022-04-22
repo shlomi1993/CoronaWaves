@@ -13,17 +13,17 @@ class State:
         self.is_running = False
         self.is_paused = False
 
-    def setStopped(self):
+    def set_stopped(self):
         self.is_stopped = True
         self.is_running = False
         self.is_paused = False
 
-    def setRunning(self):
+    def set_running(self):
         self.is_stopped = False
         self.is_running = True
         self.is_paused = False
 
-    def setPaused(self):
+    def set_paused(self):
         self.is_stopped = False
         self.is_running = False
         self.is_paused = True

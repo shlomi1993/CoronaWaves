@@ -89,7 +89,7 @@ class Creature:
         """
 
         # If the creature is healthy, then check if it needs to be infected.
-        if self.infection == 0:
+        if self.infection < 1:
 
             # Traverse its neighbor cells.
             for x in range(-1, 2):
@@ -100,10 +100,11 @@ class Creature:
                     nj = (self.pos[1] + y) % DIM  # Wrap-around.
                     neighbor = grid[ni][nj].creature
 
-                    # If there is a neighbor, infect at a given probability.
+                    # If there is a neighbor, infect at the given probability.
                     if neighbor is not None and neighbor.infection > 0:
                         if random.random() < probability:
                             self.infection = healing_time
+                            break
 
         # Otherwise, an infected creature can not be infected again and its
         # infection counter needs to be shortened by one generation.
@@ -128,6 +129,7 @@ class Automata:
 
         # Basic attributes.
         self.state = State()
+        self.generation = 0
         self.app = app
 
         # Experiment's parameters -- initializes later by set() function.
@@ -138,77 +140,12 @@ class Automata:
         self.high_prob = 0.0
         self.low_prob = 0.0
         self.threshold = 0.0
+        self.gen_limit = 0
 
         # Data-structures.
         self.grid = []  # Provides a way for cell occupancy check.
         self.creatures = []  # Traversing creatures is faster than cells.
         self.trand = []  # Store number of infected in each generation.
-
-    def __create_grid_and_creatures(self):
-        """
-        Private method that creates a grid of cells, populate it with creatures,
-        and make some of them infected - according to experiment's parameters.
-        :return: None, but the method initializes grid and creatures attributes.
-        """
-
-        # Initialize a grid.
-        self.grid = [[Cell() for j in range(DIM)] for i in range(DIM)]
-
-        # Select random positions.
-        positions = [(i, j) for j in range(DIM) for i in range(DIM)]
-        positions = random.choices(positions, k=self.n_creatures)
-
-        # Create and place creatures.
-        for (i, j) in positions:
-            c = Creature(i, j)
-            self.grid[i][j].put(c)
-            self.creatures.append(c)
-
-        # Select n_infected random creatures and make them infected.
-        chosen = random.choices(self.creatures, k=self.n_infected)
-        for c in chosen:
-            c.infection = self.healing_time
-
-        # Select n_quick random creatures and set their steps attribute to 10.
-        chosen = random.choices(self.creatures, k=self.n_quick)
-        for c in chosen:
-            c.steps = 10
-
-    def set(self, N, D, X, R, P_high, P_low, T):
-        """
-        This method initialize experiment's parameters on runtime. It gets the
-        parameters of the experiment and call __create_grid_and_creatures().
-        :param N: Number of creatures in the experiment.
-        :param D: Fraction of N of infected creatures at the start state.
-        :param X: Healing time by number of generations (i.e., days).
-        :param R: Fraction of N of quick creatures.
-        :param P_high: High infection probability.
-        :param P_low: Low infection probability.
-        :param T: The threshold to change between probabilities.
-        :return: None, but it changes attributes.
-        """
-
-        self.n_creatures = N
-        self.n_quick = int(R * N)
-        self.n_infected = int(D * N)
-        self.healing_time = X
-        self.high_prob = P_high
-        self.low_prob = P_low
-        self.threshold = int(T * N)
-        self.__create_grid_and_creatures()
-
-    def __plot(self):
-        """
-        This private method creates a plot, show it, and save it to a PNG file.
-        :return: None, but it outputs a plot.
-        """
-        plt.figure()
-        plt.title('Number of infected creatures per generation')
-        plt.xlabel('Generation')
-        plt.ylabel('Infected')
-        plt.plot(list(range(len(self.trand))), self.trand)
-        plt.show()
-        plt.savefig("InfectedPerGeneration.png")
 
     def __advance(self):
         """
@@ -216,6 +153,9 @@ class Automata:
         two generations in the automata.
         :return: None, but it updates attributes and frame.
         """
+
+        # Advance generation.
+        self.generation += 1
 
         # Clear canvas.
         self.app.frame.delete('all')
@@ -246,47 +186,123 @@ class Automata:
         p = self.high_prob if self.n_infected < self.threshold else self.low_prob
 
         # Update each creature's infection and position.
-        for c in self.creatures:
-            c.infect(self.grid, p, self.healing_time)
-            c.move(self.grid)
-
-        # Count infected creatures and update attribute.
         count_infected = 0
         for c in self.creatures:
+            c.infect(self.grid, p, self.healing_time)
             if c.infection > 0:
                 count_infected += 1
+            c.move(self.grid)
+
+        # Update the number of infected creatures.
         self.n_infected = count_infected
+
+    def __update_info(self):
+        """
+        This private method updates information entries in the app.
+        :return: None.
+        """
+        self.app.generation.delete(0, 'end')
+        self.app.generation.insert(0, self.generation)
+        self.app.n_infected.delete(0, 'end')
+        self.app.n_infected.insert(0, self.n_infected)
+        self.app.distribution.delete(0, 'end')
+        dist = str(int((self.n_infected / self.n_creatures) * 100)) + '%'
+        self.app.distribution.insert(0, dist)
+        self.app.capacity.delete(0, 'end')
+        if self.threshold > 0:
+            cap = str(int((self.n_infected / self.threshold) * 100)) + '%'
+        else:
+            cap = 'inf'
+        self.app.capacity.insert(0, cap)
 
     def __loop(self):
         """
         This private method implements the simulation itself. It updates
-        entries in the app, call __advance(), and then schedule an async call
-        to itself (using Tkinter) to the next 100 milliseconds.
+        entries, save current number of infected, advance the automata, and then
+        schedule an async call to itself to the next 100 milliseconds (using
+        Tkinter), if there is no generation limitation.
         :return: None.
         """
         if self.state.is_running:
-            self.app.n_infected.delete(0, 'end')
-            self.app.n_infected.insert(0, self.n_infected)
-            self.app.distribution.delete(0, 'end')
-            dist = str(int((self.n_infected / self.n_creatures) * 100)) + '%'
-            self.app.distribution.insert(0, dist)
-            self.app.capacity.delete(0, 'end')
-            if self.threshold > 0:
-                cap = str(int((self.n_infected / self.threshold) * 100)) + '%'
-            else:
-                cap = 'inf'
-            self.app.capacity.insert(0, cap)
+            self.__update_info()
             self.trand.append(self.n_infected)
             self.__advance()
-            self.app.window.after(100, self.__loop)
+            if not self.gen_limit or self.generation <= self.gen_limit:
+                self.app.after(100, self.__loop)
+            else:
+                self.app.stop_btn_action()
+
+    def plot(self):
+        """
+        This private method creates a plot, show it, and save it to a PNG file.
+        :return: None, but it outputs a plot.
+        """
+        plt.figure()
+        plt.title('Number of infected creatures per generation')
+        plt.xlabel('Generation')
+        plt.ylabel('Infected')
+        plt.plot(list(range(len(self.trand))), self.trand)
+        plt.show()
+        plt.savefig("infection.png")
+
+    def set(self, N, D, X, R, P_high, P_low, T, L):
+        """
+        :param N: Number of creatures in the experiment.
+        :param D: Fraction of N of infected creatures at the start state.
+        :param X: Healing time by number of generations (i.e., days).
+        :param R: Fraction of N of quick creatures.
+        :param P_high: High infection probability.
+        :param P_low: Low infection probability.
+        :param T: The threshold to change between probabilities.
+        :param L: Generation limit (zero means no limitation).
+        :return: None, but it initializes attributes.
+        """
+
+        # Set parameters.
+        self.n_creatures = N
+        self.n_quick = int(R * N)
+        self.n_infected = int(D * N)
+        self.healing_time = X
+        self.high_prob = P_high
+        self.low_prob = P_low
+        self.threshold = int(T * N)
+        self.gen_limit = L
+
+        # Initialize a grid.
+        self.grid = [[Cell() for j in range(DIM)] for i in range(DIM)]
+
+        # Select random positions.
+        positions = [(i, j) for j in range(DIM) for i in range(DIM)]
+        random.shuffle(positions)
+        positions = positions[:self.n_creatures]
+
+        # Create and place creatures.
+        for (i, j) in positions:
+            c = Creature(i, j)
+            self.grid[i][j].put(c)
+            self.creatures.append(c)
+
+        # Select n_infected random creatures and make them infected.
+        chosen = self.creatures
+        random.shuffle(chosen)
+        chosen = chosen[:self.n_infected]
+        for c in chosen:
+            c.infection = self.healing_time
+
+        # Select n_quick random creatures and set their steps attribute to 10.
+        chosen = self.creatures
+        random.shuffle(chosen)
+        chosen = chosen[:self.n_quick]
+        for c in chosen:
+            c.steps = 10
 
     def run(self):
         """
         This method make the simulation running.
         :return: None.
         """
-        self.state.setRunning()
-        self.app.window.after(0, self.__loop)
+        self.state.set_running()
+        self.app.after(0, self.__loop)
 
     def pause(self):
         """
@@ -294,7 +310,7 @@ class Automata:
         the running from the point she paused it.
         :return: None.
         """
-        self.state.setPaused()
+        self.state.set_paused()
 
     def stop(self):
         """
@@ -302,8 +318,9 @@ class Automata:
         :return: None.
         """
         self.app.frame.delete('all')
-        self.state.setStopped()
-        self.__plot()
+        self.state.set_stopped()
+        self.plot()
         self.grid = []
         self.creatures = []
         self.trand = []
+        self.generation = 0

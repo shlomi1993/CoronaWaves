@@ -26,7 +26,7 @@ def createEntry(master, default_value):
     return entry
 
 
-class App:
+class App(tk.Tk):
     """
     This class defines the behaviour of the app and its window.
     """
@@ -37,18 +37,18 @@ class App:
         :return: App object.
         """
 
-        # Define windows as a Tk object and configure it.
-        self.window = tk.Tk()
-        self.window.geometry('1100x830')
-        self.window.minsize(1100, 830)
-        self.window.maxsize(1100, 830)
-        self.window.configure(background=palette.bg, highlightcolor=palette.fg)
-        self.window.title('Corona Waves')
+        # Inherit Tkinter class and configure it.
+        super().__init__()
+        self.geometry('1100x830')
+        self.minsize(1100, 830)
+        self.maxsize(1100, 830)
+        self.configure(background=palette.bg, highlightcolor=palette.fg)
+        self.title('Corona Waves')
         def on_closing():
             if messagebox.askokcancel("Quit", "Do you want to quit?"):
-                self.window.destroy()
+                self.destroy()
                 exit(0)
-        self.window.protocol("WM_DELETE_WINDOW", on_closing)
+        self.protocol("WM_DELETE_WINDOW", on_closing)
 
         # Create a frame for a cellular automata, and instantiate and automata.
         self.frame = tk.Canvas(bg=palette.canvas_bg,
@@ -61,13 +61,13 @@ class App:
 
         # Create configurations section with labels, entries and buttons.
         self.configuration = tk.LabelFrame(
-            master=self.window,
+            master=self,
             bg=palette.bg,
             fg=palette.fg,
             text='Configuration',
             font=fonts.regular
         )
-        self.configuration.place(relx=0.015, rely=0.015)
+        self.configuration.place(relx=0.01, rely=0.015, width=265)
 
         tk.Label(
             master=self.configuration,
@@ -139,48 +139,71 @@ class App:
         self.threshold = createEntry(self.configuration, '0.5')
         self.threshold.grid(row=6, column=1, padx=5, pady=5, sticky='w')
 
+        tk.Label(
+            master=self.configuration,
+            font=fonts.regular,
+            bg=palette.bg,
+            fg=palette.fg,
+            text='Generation limit (Optional):'
+        ).grid(row=7, column=0, padx=5, pady=5, sticky='w')
+        self.gen_limit = createEntry(self.configuration, '')
+        self.gen_limit.grid(row=7, column=1, padx=5, pady=5, sticky='w')
+
         self.pause_btn = tk.Button(
-            master=self.window,
+            master=self,
             width=12,
             bg=palette.btn_bg,
             fg=palette.btn_fg,
+            relief='groove',
             font=fonts.bold,
             text='\u23F8 Pause',
             command=self.pause_btn_action
         )
-        self.pause_btn.place(relx=0.02, rely=0.35)
+        self.pause_btn.place(relx=0.01, rely=0.59, width=125, height=40)
 
         self.stop_btn = tk.Button(
-            master=self.window,
+            master=self,
             width=12,
             bg=palette.btn_bg,
             fg=palette.btn_fg,
+            relief='groove',
             font=fonts.bold,
             text='\u23F9 Stop',
             command=self.stop_btn_action
         )
-        self.stop_btn.place(relx=0.135, rely=0.35)
+        self.stop_btn.place(relx=0.137, rely=0.59, width=125, height=40)
 
         self.run_btn = tk.Button(
-            master=self.window,
+            master=self,
             width=27,
             bg=palette.btn_bg,
             fg=palette.btn_fg,
+            relief='groove',
             font=fonts.bold,
             text='\u23F5 Start   ',
             command=self.run_btn_action
         )
-        self.run_btn.place(relx=0.015, rely=0.35)
+        self.run_btn.place(relx=0.01, rely=0.59, width=265, height=40)
 
         # Create information section with labels and entries.
         self.information = tk.LabelFrame(
-            master=self.window,
+            master=self,
             bg=palette.bg,
             fg=palette.fg,
             text='Information',
             font=fonts.regular
         )
-        self.information.place(relx=0.015, rely=0.41)
+        self.information.place(relx=0.01, rely=0.38, width=265)
+
+        tk.Label(
+            master=self.information,
+            font=fonts.regular,
+            bg=palette.bg,
+            fg=palette.fg,
+            text='Generation:'
+        ).grid(row=0, column=0, padx=5, pady=5, sticky='w')
+        self.generation = createEntry(self.information, 'n/a')
+        self.generation.grid(row=0, column=1, padx=5, pady=5, sticky='w')
 
         tk.Label(
             master=self.information,
@@ -188,9 +211,9 @@ class App:
             bg=palette.bg,
             fg=palette.fg,
             text='Infected creatures:'
-        ).grid(row=0, column=0, padx=5, pady=5, sticky='w')
+        ).grid(row=1, column=0, padx=5, pady=5, sticky='w')
         self.n_infected = createEntry(self.information, 'n/a')
-        self.n_infected.grid(row=0, column=1, padx=5, pady=5, sticky='w')
+        self.n_infected.grid(row=1, column=1, padx=5, pady=5, sticky='w')
 
         tk.Label(
             master=self.information,
@@ -198,30 +221,28 @@ class App:
             bg=palette.bg,
             fg=palette.fg,
             text='Distribution of infection:'
-        ).grid(row=1, column=0, padx=5, pady=5, sticky='w')
+        ).grid(row=2, column=0, padx=5, pady=5, sticky='w')
         self.distribution = createEntry(self.information, 'n/a')
-        self.distribution.grid(row=1, column=1, padx=5, pady=5, sticky='w')
+        self.distribution.grid(row=2, column=1, padx=5, pady=5, sticky='w')
 
         tk.Label(
             master=self.information,
             font=fonts.regular,
             bg=palette.bg,
             fg=palette.fg,
-            text='Infection / threshold ratio:'
-        ).grid(row=2, column=0, padx=5, pady=5, sticky='w')
+            text='Infection to threshold ratio:'
+        ).grid(row=3, column=0, padx=5, pady=5, sticky='w')
         self.capacity = createEntry(self.information, 'n/a')
-        self.capacity.grid(row=2, column=1, padx=5, pady=5, sticky='w')
+        self.capacity.grid(row=3, column=1, padx=5, pady=5, sticky='w')
 
         # Credit.
         tk.Label(
-            master=self.window,
+            master=self,
             font=fonts.credit,
             bg=palette.bg,
             fg=palette.fg,
             text='\u00A9 Created by Shlomi Ben-Shushan and Itamar Laredo'
         ).place(relx=0.006, rely=0.97)
-
-        self.window.mainloop()
 
     def get_input(self):
         """
@@ -290,8 +311,20 @@ class App:
             msg = 'Threshold must be a float between 0 and 1.'
             error_messages.append(msg)
 
+        L = self.gen_limit.get().strip()
+        if L == '':
+            L = 0
+        else:
+            try:
+                L = int(L)
+                if L <= 0:
+                    raise ValueError
+            except ValueError:
+                msg = 'Generation limit must be a positive integer (or empty).'
+                error_messages.append(msg)
+
         if len(error_messages) == 0:
-            return N, D, X, R, PH, PL, T
+            return N, D, X, R, PH, PL, T, L
         messagebox.showerror('Input Error', '\n'.join(error_messages))
         return None
 
@@ -304,9 +337,9 @@ class App:
         if self.automata.state.is_stopped:
             params = self.get_input()
             if params:
-                N, D, X, R, PH, PL, T = params
+                N, D, X, R, PH, PL, T, L = params
                 self.run_btn.place_forget()
-                self.automata.set(N, D, X, R, PH, PL, T)
+                self.automata.set(N, D, X, R, PH, PL, T, L)
                 self.automata.run()
         elif self.automata.state.is_paused:
             self.run_btn.place_forget()
@@ -317,7 +350,7 @@ class App:
         Defines the action to be taken when user clicks the "Pause" button.
         :return: None.
         """
-        self.run_btn.place(relx=0.015, rely=0.35)
+        self.run_btn.place(relx=0.01, rely=0.59, width=265, height=40)
         self.run_btn.configure(text='\u23F5 Resume  ', font=fonts.bold)
         self.automata.pause()
 
@@ -326,6 +359,6 @@ class App:
         Defines the action to be taken when user click the "Stop" button.
         :return: None.
         """
-        self.run_btn.place(relx=0.015, rely=0.35)
+        self.run_btn.place(relx=0.01, rely=0.59, width=265, height=40)
         self.run_btn.configure(text='\u23F5 Start   ', font=fonts.bold)
         self.automata.stop()

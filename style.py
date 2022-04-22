@@ -13,6 +13,8 @@ class Palette:
         self.canvas_outline = 'gray'
         self.btn_bg = '#181818'
         self.btn_fg = '#f0f0f0'
+        self.btn_active_bg = '#1f1f1f'
+        self.btn_active_fg = '#f5f5f5'
         self.red = '#ff0000'
         self.orange = '#ffa500'
         self.cyan = '#00ffff'
