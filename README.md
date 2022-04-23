@@ -17,6 +17,8 @@ The application has a configure bar for the purpose of studying the behavior of 
 The user can add the values of the number of people in the population, choose how many of them will be infected with the virus at the beginning of the run, how long it takes to create and recover from the disease and somemore features.
 While running, the user receives important information about the system, such as the total percentage of infections, the number of infections, and the likelihood of being infected.
 At the end of the run, when the user clicks on the 'Stop' button, a patient behavior graph will appear among the population as a function of duration.
+![result1](https://user-images.githubusercontent.com/60240620/164909364-d92edc72-a081-4e59-ab6a-ea25422fdd7f.png)
+
 
 ### Dictionary
 
