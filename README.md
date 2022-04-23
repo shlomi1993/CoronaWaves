@@ -22,7 +22,7 @@ At the end of the run, when the user clicks on the 'Stop' button, a patient beha
 
 ### Dictionary
 
-* app.py - Document containing the app settings, windows, grid, logins and buttons.
+* app.py - Document containing the app settings, windows, grid, entries and buttons.
 * automata.py - Document that containing the engine behind the simulator. Calculates the behavior of the creatures inside the grid, their movement in each generation and the attitude towards the creatures around them. Each generation presents the results on the grid.
 * state.py - Document that represents automata's states
 * style.py - Document that represents a color palette for easy access to pre-defined colors.
