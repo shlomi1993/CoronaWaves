@@ -2,8 +2,8 @@
 # Itamar Laredo 311547087
 
 
-import random
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
+from random import random, randint, shuffle
 from state import State
 from style import palette
 
@@ -67,7 +67,7 @@ class Creature:
         """
         i, j = self.pos
         for _ in range(5):
-            di, dj = random.randint(-1, 1), random.randint(-1, 1)
+            di, dj = randint(-1, 1), randint(-1, 1)
             new_i = (i + di * self.steps) % DIM
             new_j = (j + dj * self.steps) % DIM
             if new_i == i and new_j == j:
@@ -102,7 +102,7 @@ class Creature:
 
                     # If there is a neighbor, infect at the given probability.
                     if neighbor is not None and neighbor.infection > 0:
-                        if random.random() < probability:
+                        if random() < probability:
                             self.infection = healing_time
                             break
 
@@ -272,7 +272,7 @@ class Automata:
 
         # Select random positions.
         positions = [(i, j) for j in range(DIM) for i in range(DIM)]
-        random.shuffle(positions)
+        shuffle(positions)
         positions = positions[:self.n_creatures]
 
         # Create and place creatures.
@@ -283,14 +283,14 @@ class Automata:
 
         # Select n_infected random creatures and make them infected.
         chosen = self.creatures
-        random.shuffle(chosen)
+        shuffle(chosen)
         chosen = chosen[:self.n_infected]
         for c in chosen:
             c.infection = self.healing_time
 
         # Select n_quick random creatures and set their steps attribute to 10.
         chosen = self.creatures
-        random.shuffle(chosen)
+        shuffle(chosen)
         chosen = chosen[:self.n_quick]
         for c in chosen:
             c.steps = 10

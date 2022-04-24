@@ -1,8 +1,8 @@
 # Shlomi Ben-Shushan 311408264
 # Itamar Laredo 311547087
 
-import tkinter as tk
-from tkinter import messagebox
+
+from tkinter import Tk, LabelFrame, Label, Entry, Canvas, Button, messagebox
 from automata import Automata
 from style import palette, fonts
 
@@ -14,7 +14,7 @@ def createEntry(master, default_value):
     :param default_value: default value to begin with.
     :return: an Entry object.
     """
-    entry = tk.Entry(
+    entry = Entry(
         master=master,
         font=fonts.regular,
         width=7,
@@ -26,7 +26,7 @@ def createEntry(master, default_value):
     return entry
 
 
-class App(tk.Tk):
+class App(Tk):
     """
     This class defines the behaviour of the app and its window.
     """
@@ -51,16 +51,17 @@ class App(tk.Tk):
         self.protocol("WM_DELETE_WINDOW", on_closing)
 
         # Create a frame for a cellular automata, and instantiate and automata.
-        self.frame = tk.Canvas(bg=palette.canvas_bg,
-                               bd=0,
-                               highlightbackground=palette.canvas_outline,
-                               width=800,
-                               height=800)
+        self.frame = Canvas(
+            bg=palette.canvas_bg,
+            bd=0,
+            highlightbackground=palette.canvas_outline,
+            width=800,
+            height=800)
         self.frame.place(relx=0.26, rely=0.025)
         self.automata = Automata(self)
 
         # Create configurations section with labels, entries and buttons.
-        self.configuration = tk.LabelFrame(
+        self.configuration = LabelFrame(
             master=self,
             bg=palette.bg,
             fg=palette.fg,
@@ -69,7 +70,7 @@ class App(tk.Tk):
         )
         self.configuration.place(relx=0.01, rely=0.015, width=265)
 
-        tk.Label(
+        Label(
             master=self.configuration,
             font=fonts.regular,
             bg=palette.bg,
@@ -79,7 +80,7 @@ class App(tk.Tk):
         self.n_creature = createEntry(self.configuration, '4000')
         self.n_creature.grid(row=0, column=1, padx=5, pady=5, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.configuration,
             font=fonts.regular,
             bg=palette.bg,
@@ -89,7 +90,7 @@ class App(tk.Tk):
         self.p_infected = createEntry(self.configuration, '0.5')
         self.p_infected.grid(row=1, column=1, padx=5, pady=5, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.configuration,
             font=fonts.regular,
             bg=palette.bg,
@@ -99,7 +100,7 @@ class App(tk.Tk):
         self.p_quick = createEntry(self.configuration, '0.5')
         self.p_quick.grid(row=2, column=1, padx=5, pady=5, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.configuration,
             font=fonts.regular,
             bg=palette.bg,
@@ -109,7 +110,7 @@ class App(tk.Tk):
         self.healing_time = createEntry(self.configuration, '50')
         self.healing_time.grid(row=3, column=1, padx=5, pady=5, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.configuration,
             font=fonts.regular,
             bg=palette.bg,
@@ -119,7 +120,7 @@ class App(tk.Tk):
         self.high_probability = createEntry(self.configuration, '0.7')
         self.high_probability.grid(row=4, column=1, padx=5, pady=5, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.configuration,
             font=fonts.regular,
             bg=palette.bg,
@@ -129,7 +130,7 @@ class App(tk.Tk):
         self.low_probability = createEntry(self.configuration, '0.3')
         self.low_probability.grid(row=5, column=1, padx=5, pady=5, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.configuration,
             font=fonts.regular,
             bg=palette.bg,
@@ -139,7 +140,7 @@ class App(tk.Tk):
         self.threshold = createEntry(self.configuration, '0.5')
         self.threshold.grid(row=6, column=1, padx=5, pady=5, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.configuration,
             font=fonts.regular,
             bg=palette.bg,
@@ -149,7 +150,7 @@ class App(tk.Tk):
         self.gen_limit = createEntry(self.configuration, '')
         self.gen_limit.grid(row=7, column=1, padx=5, pady=5, sticky='w')
 
-        self.pause_btn = tk.Button(
+        self.pause_btn = Button(
             master=self,
             width=12,
             bg=palette.btn_bg,
@@ -161,7 +162,7 @@ class App(tk.Tk):
         )
         self.pause_btn.place(relx=0.01, rely=0.745, width=125, height=40)
 
-        self.stop_btn = tk.Button(
+        self.stop_btn = Button(
             master=self,
             width=12,
             bg=palette.btn_bg,
@@ -173,7 +174,7 @@ class App(tk.Tk):
         )
         self.stop_btn.place(relx=0.137, rely=0.745, width=125, height=40)
 
-        self.run_btn = tk.Button(
+        self.run_btn = Button(
             master=self,
             width=27,
             bg=palette.btn_bg,
@@ -186,7 +187,7 @@ class App(tk.Tk):
         self.run_btn.place(relx=0.01, rely=0.745, width=265, height=40)
 
         # Create information section with labels and entries.
-        self.information = tk.LabelFrame(
+        self.information = LabelFrame(
             master=self,
             bg=palette.bg,
             fg=palette.fg,
@@ -195,7 +196,7 @@ class App(tk.Tk):
         )
         self.information.place(relx=0.01, rely=0.38, width=265)
 
-        tk.Label(
+        Label(
             master=self.information,
             font=fonts.regular,
             bg=palette.bg,
@@ -205,7 +206,7 @@ class App(tk.Tk):
         self.generation = createEntry(self.information, 'n/a')
         self.generation.grid(row=0, column=1, padx=5, pady=5, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.information,
             font=fonts.regular,
             bg=palette.bg,
@@ -215,7 +216,7 @@ class App(tk.Tk):
         self.n_infected = createEntry(self.information, 'n/a')
         self.n_infected.grid(row=1, column=1, padx=5, pady=5, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.information,
             font=fonts.regular,
             bg=palette.bg,
@@ -225,7 +226,7 @@ class App(tk.Tk):
         self.distribution = createEntry(self.information, 'n/a')
         self.distribution.grid(row=2, column=1, padx=5, pady=5, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.information,
             font=fonts.regular,
             bg=palette.bg,
@@ -236,7 +237,7 @@ class App(tk.Tk):
         self.capacity.grid(row=3, column=1, padx=5, pady=5, sticky='w')
 
         # Create Legend section.
-        self.legend = tk.LabelFrame(
+        self.legend = LabelFrame(
             master=self,
             bg=palette.bg,
             fg=palette.fg,
@@ -245,7 +246,7 @@ class App(tk.Tk):
         )
         self.legend.place(relx=0.01, rely=0.585, width=265)
 
-        tk.Label(
+        Label(
             master=self.legend,
             font=fonts.regular,
             bg=palette.bg,
@@ -253,7 +254,7 @@ class App(tk.Tk):
             text=' \u2022  White - healthy.'
         ).grid(row=0, column=0, padx=5, pady=0, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.legend,
             font=fonts.regular,
             bg=palette.bg,
@@ -261,7 +262,7 @@ class App(tk.Tk):
             text=' \u2022  Cyan - healthy and quick.'
         ).grid(row=1, column=0, padx=5, pady=0, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.legend,
             font=fonts.regular,
             bg=palette.bg,
@@ -269,7 +270,7 @@ class App(tk.Tk):
             text=' \u2022  Orange - infected.'
         ).grid(row=2, column=0, padx=5, pady=0, sticky='w')
 
-        tk.Label(
+        Label(
             master=self.legend,
             font=fonts.regular,
             bg=palette.bg,
@@ -278,7 +279,7 @@ class App(tk.Tk):
         ).grid(row=3, column=0, padx=5, pady=0, sticky='w')
 
         # Credit.
-        tk.Label(
+        Label(
             master=self,
             font=fonts.credit,
             bg=palette.bg,
